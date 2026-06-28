@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>미국 섹터 ETF 이격도 트래커</title>
+  <meta name="description" content="GICS 11개 섹터 SPDR ETF의 50일 이격도를 매일 자동 추적하는 대시보드. 이그전(이은택의 그림전략) 해석법 기반." />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body data-page="main">
+  <div class="wrap">
+    <header class="site-header">
+      <div class="emoji">📊</div>
+      <h1>미국 섹터 ETF 이격도 트래커</h1>
+      <p class="subtitle">GICS 11개 섹터 SPDR ETF · 50일 이격도 기반 (이그전 해석법)</p>
+    </header>
+
+    <div id="status-bar" class="status-bar">
+      <span class="status-pill">데이터 준비 중…</span>
+    </div>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>섹터 이격도 순위</h2>
+        <div class="view-toggle">
+          <button id="btn-table" class="active">순위표</button>
+          <button id="btn-heat">히트맵</button>
+        </div>
+      </div>
+      <div id="table-view"><div class="loading">불러오는 중…</div></div>
+      <div id="heat-view" style="display:none"></div>
+
+      <div class="legend" style="margin-top:16px">
+        <span class="item"><span class="sw" style="background:#ef4444"></span>과열 ≥130</span>
+        <span class="item"><span class="sw" style="background:#f59e0b"></span>경계 120–130</span>
+        <span class="item"><span class="sw" style="background:#22c55e"></span>정상 105–120</span>
+        <span class="item"><span class="sw" style="background:#3b82f6"></span>과열 해소 ≤105</span>
+      </div>
+    </section>
+
+    <section class="card method">
+      <h2>이격도란?</h2>
+      <p><code>이격도(%) = 당일 종가 ÷ 50일 이동평균 × 100</code></p>
+      <p>가격이 50일 평균선 대비 얼마나 위/아래에 있는지를 나타내는 비율 지표입니다. ETF 가격은 달러 기준이지만 이격도는 비율이라 환율과 무관합니다. 이은택의 그림전략(이그전)에서 제시한 코스피 기준값(105/120/130)을 11개 섹터 전체에 동일하게 적용합니다.</p>
+      <ul>
+        <li><strong style="color:#ef4444">과열 (≥130)</strong> — 추격매수(패닉 바잉) 자제</li>
+        <li><strong style="color:#f59e0b">경계 (120–130)</strong> — 분할·속도 조절 관심</li>
+        <li><strong style="color:#22c55e">정상 (105–120)</strong> — 추세 추종 유효</li>
+        <li><strong style="color:#3b82f6">과열 해소 (≤105)</strong> — 투매 자제, 조정 끝난 섹터부터 매수</li>
+      </ul>
+    </section>
+
+    <p class="disclaimer">
+      본 사이트는 정보 제공용이며 투자 권유가 아닙니다. 투자 판단의 책임은 이용자 본인에게 있습니다.<br>
+      데이터 출처: Yahoo Finance (yfinance) · 105/120/130 임계값은 코스피 기준으로 만들어진 값이라 섹터 간 절대 비교에는 한계가 있습니다.
+    </p>
+  </div>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

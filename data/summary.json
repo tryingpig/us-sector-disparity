@@ -1,0 +1,144 @@
+{
+  "updated_at": "2026-06-28T16:23:56+09:00",
+  "as_of_date": "2026-06-26",
+  "ma_period": 50,
+  "zones": {
+    "cooldown_max": 105,
+    "normal_max": 120,
+    "warning_max": 130
+  },
+  "sectors": [
+    {
+      "ticker": "XLV",
+      "name_ko": "헬스케어",
+      "name_en": "Health Care Select Sector SPDR ETF",
+      "theme": "방어 성장·정책 리스크",
+      "price": 160.34,
+      "ma50": 147.94,
+      "disparity": 108.38,
+      "zone": "normal",
+      "as_of_date": "2026-06-26",
+      "rank": 1
+    },
+    {
+      "ticker": "XLI",
+      "name_ko": "산업재",
+      "name_en": "Industrial Select Sector SPDR ETF",
+      "theme": "제조·인프라·방산·물류",
+      "price": 181.2,
+      "ma50": 173.97,
+      "disparity": 104.16,
+      "zone": "cooldown",
+      "as_of_date": "2026-06-26",
+      "rank": 2
+    },
+    {
+      "ticker": "XLU",
+      "name_ko": "유틸리티",
+      "name_en": "Utilities Select Sector SPDR ETF",
+      "theme": "전력수요·배당·금리",
+      "price": 46.2,
+      "ma50": 44.78,
+      "disparity": 103.17,
+      "zone": "cooldown",
+      "as_of_date": "2026-06-26",
+      "rank": 3
+    },
+    {
+      "ticker": "XLF",
+      "name_ko": "금융",
+      "name_en": "Financial Select Sector SPDR ETF",
+      "theme": "금리·신용·자본시장",
+      "price": 53.57,
+      "ma50": 51.98,
+      "disparity": 103.06,
+      "zone": "cooldown",
+      "as_of_date": "2026-06-26",
+      "rank": 4
+    },
+    {
+      "ticker": "XLRE",
+      "name_ko": "부동산",
+      "name_en": "Real Estate Select Sector SPDR ETF",
+      "theme": "금리·REITs·배당",
+      "price": 45.24,
+      "ma50": 43.92,
+      "disparity": 103.01,
+      "zone": "cooldown",
+      "as_of_date": "2026-06-26",
+      "rank": 5
+    },
+    {
+      "ticker": "XLK",
+      "name_ko": "정보기술",
+      "name_en": "Technology Select Sector SPDR ETF",
+      "theme": "AI·반도체·소프트웨어",
+      "price": 181.11,
+      "ma50": 175.86,
+      "disparity": 102.99,
+      "zone": "cooldown",
+      "as_of_date": "2026-06-26",
+      "rank": 6
+    },
+    {
+      "ticker": "XLP",
+      "name_ko": "필수소비재",
+      "name_en": "Consumer Staples Select Sector SPDR ETF",
+      "theme": "경기 둔화 방어·마진",
+      "price": 84.71,
+      "ma50": 83.29,
+      "disparity": 101.7,
+      "zone": "cooldown",
+      "as_of_date": "2026-06-26",
+      "rank": 7
+    },
+    {
+      "ticker": "XLB",
+      "name_ko": "소재",
+      "name_en": "Materials Select Sector SPDR ETF",
+      "theme": "원자재·화학·금속",
+      "price": 51.6,
+      "ma50": 51.15,
+      "disparity": 100.88,
+      "zone": "cooldown",
+      "as_of_date": "2026-06-26",
+      "rank": 8
+    },
+    {
+      "ticker": "XLY",
+      "name_ko": "임의소비재",
+      "name_en": "Consumer Discretionary Select Sector SPDR ETF",
+      "theme": "소비 사이클·자동차·이커머스",
+      "price": 114.37,
+      "ma50": 117.44,
+      "disparity": 97.39,
+      "zone": "cooldown",
+      "as_of_date": "2026-06-26",
+      "rank": 9
+    },
+    {
+      "ticker": "XLE",
+      "name_ko": "에너지",
+      "name_en": "Energy Select Sector SPDR ETF",
+      "theme": "유가·정제마진·현금흐름",
+      "price": 53.84,
+      "ma50": 56.81,
+      "disparity": 94.77,
+      "zone": "cooldown",
+      "as_of_date": "2026-06-26",
+      "rank": 10
+    },
+    {
+      "ticker": "XLC",
+      "name_ko": "커뮤니케이션 서비스",
+      "name_en": "Communication Services Select Sector SPDR ETF",
+      "theme": "광고·미디어·플랫폼",
+      "price": 106.18,
+      "ma50": 113.99,
+      "disparity": 93.15,
+      "zone": "cooldown",
+      "as_of_date": "2026-06-26",
+      "rank": 11
+    }
+  ]
+}
