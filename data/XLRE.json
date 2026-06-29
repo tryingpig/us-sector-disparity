@@ -1,5 +1,7 @@
 {
   "ticker": "XLRE",
+  "symbol": "XLRE",
+  "kind": "sector",
   "name_ko": "부동산",
   "name_en": "Real Estate Select Sector SPDR ETF",
   "theme": "금리·REITs·배당",
@@ -3393,7 +3395,7 @@
       "date": "2023-07-21",
       "price": 34.84,
       "ma50": 33.38,
-      "disparity": 104.38
+      "disparity": 104.39
     },
     {
       "date": "2023-07-24",
@@ -4203,7 +4205,7 @@
       "date": "2024-02-02",
       "price": 35.23,
       "ma50": 35.45,
-      "disparity": 99.38
+      "disparity": 99.37
     },
     {
       "date": "2024-02-05",
@@ -4377,7 +4379,7 @@
       "date": "2024-03-15",
       "price": 35.9,
       "ma50": 35.73,
-      "disparity": 100.47
+      "disparity": 100.48
     },
     {
       "date": "2024-03-18",
@@ -5127,7 +5129,7 @@
       "date": "2024-09-13",
       "price": 42.28,
       "ma50": 39.09,
-      "disparity": 108.16
+      "disparity": 108.17
     },
     {
       "date": "2024-09-16",

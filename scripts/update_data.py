@@ -47,6 +47,15 @@ SECTORS = [
     {"ticker": "XLRE", "name_ko": "부동산",          "name_en": "Real Estate Select Sector SPDR ETF",           "theme": "금리·REITs·배당"},
 ]
 
+# 상단에 표시할 미국 주요 지수 4종.
+# yfinance 심볼은 '^'로 시작하지만 파일명/URL용 식별자(slug)는 '^'를 뺀 값을 쓴다.
+INDICES = [
+    {"ticker": "^GSPC", "slug": "GSPC", "name_ko": "S&P 500",   "name_en": "S&P 500 Index",                  "theme": "미국 대형주 500"},
+    {"ticker": "^IXIC", "slug": "IXIC", "name_ko": "나스닥 종합", "name_en": "Nasdaq Composite Index",         "theme": "기술주 중심 종합지수"},
+    {"ticker": "^DJI",  "slug": "DJI",  "name_ko": "다우존스",    "name_en": "Dow Jones Industrial Average",   "theme": "대형 우량주 30"},
+    {"ticker": "^RUT",  "slug": "RUT",  "name_ko": "러셀 2000",   "name_en": "Russell 2000 Index",             "theme": "미국 소형주 2000"},
+]
+
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 
@@ -86,72 +95,100 @@ def compute_series(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def process_entry(meta: dict, kind: str) -> dict:
+    """티커 하나(섹터 ETF 또는 지수)를 수집·계산하고 시계열 JSON을 쓴 뒤,
+    summary 용 스냅샷 dict를 반환한다. 실패 시 예외를 올린다.
+
+    kind: "sector" | "index" — 프론트에서 가격 단위($) 표기를 구분하는 데 쓴다.
+    파일/URL 식별자는 slug(없으면 ticker). yfinance 조회는 ticker(지수는 '^...').
+    """
+    symbol = meta["ticker"]
+    file_id = meta.get("slug", symbol)
+
+    df = fetch_history(symbol)
+    series = compute_series(df)
+    if series.empty:
+        raise RuntimeError("MA50 계산 가능한 데이터 부족")
+
+    last = series.iloc[-1]
+    as_of_date = series.index[-1].strftime("%Y-%m-%d")
+    disparity = float(last["disparity"])
+
+    # 개별 시계열 JSON (최근 SERIES_KEEP_DAYS 일)
+    tail = series.tail(SERIES_KEEP_DAYS)
+    payload = {
+        "ticker": file_id,
+        "symbol": symbol,
+        "kind": kind,
+        "name_ko": meta["name_ko"],
+        "name_en": meta["name_en"],
+        "theme": meta["theme"],
+        "ma_period": MA_PERIOD,
+        "series": [
+            {
+                "date": idx.strftime("%Y-%m-%d"),
+                "price": float(row["price"]),
+                "ma50": float(row["ma50"]),
+                "disparity": float(row["disparity"]),
+            }
+            for idx, row in tail.iterrows()
+        ],
+    }
+    (DATA_DIR / f"{file_id}.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+    print(f"  [OK] {symbol:6s} 이격도 {disparity:6.2f}%  ({classify_zone(disparity)})  as_of {as_of_date}")
+    return {
+        "ticker": file_id,
+        "symbol": symbol,
+        "kind": kind,
+        "name_ko": meta["name_ko"],
+        "name_en": meta["name_en"],
+        "theme": meta["theme"],
+        "price": float(last["price"]),
+        "ma50": float(last["ma50"]),
+        "disparity": disparity,
+        "zone": classify_zone(disparity),
+        "as_of_date": as_of_date,
+    }
+
+
 def build():
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     now = datetime.now(KST)
     summary_sectors = []
+    summary_indices = []
     errors = []
 
-    for meta in SECTORS:
-        ticker = meta["ticker"]
+    print("지수 수집…")
+    for meta in INDICES:
         try:
-            df = fetch_history(ticker)
-            series = compute_series(df)
-            if series.empty:
-                raise RuntimeError("MA50 계산 가능한 데이터 부족")
-
-            last = series.iloc[-1]
-            as_of_date = series.index[-1].strftime("%Y-%m-%d")
-            disparity = float(last["disparity"])
-
-            # 섹터별 시계열 JSON (최근 SERIES_KEEP_DAYS 일)
-            tail = series.tail(SERIES_KEEP_DAYS)
-            ticker_payload = {
-                "ticker": ticker,
-                "name_ko": meta["name_ko"],
-                "name_en": meta["name_en"],
-                "theme": meta["theme"],
-                "ma_period": MA_PERIOD,
-                "series": [
-                    {
-                        "date": idx.strftime("%Y-%m-%d"),
-                        "price": float(row["price"]),
-                        "ma50": float(row["ma50"]),
-                        "disparity": float(row["disparity"]),
-                    }
-                    for idx, row in tail.iterrows()
-                ],
-            }
-            (DATA_DIR / f"{ticker}.json").write_text(
-                json.dumps(ticker_payload, ensure_ascii=False, indent=2), encoding="utf-8"
-            )
-
-            summary_sectors.append({
-                "ticker": ticker,
-                "name_ko": meta["name_ko"],
-                "name_en": meta["name_en"],
-                "theme": meta["theme"],
-                "price": float(last["price"]),
-                "ma50": float(last["ma50"]),
-                "disparity": disparity,
-                "zone": classify_zone(disparity),
-                "as_of_date": as_of_date,
-            })
-            print(f"  [OK] {ticker:5s} 이격도 {disparity:6.2f}%  ({classify_zone(disparity)})  as_of {as_of_date}")
+            summary_indices.append(process_entry(meta, "index"))
         except Exception as e:  # noqa: BLE001
-            errors.append(ticker)
-            print(f"  [FAIL] {ticker}: {e}", file=sys.stderr)
+            errors.append(meta["ticker"])
+            print(f"  [FAIL] {meta['ticker']}: {e}", file=sys.stderr)
+
+    print("섹터 수집…")
+    for meta in SECTORS:
+        try:
+            summary_sectors.append(process_entry(meta, "sector"))
+        except Exception as e:  # noqa: BLE001
+            errors.append(meta["ticker"])
+            print(f"  [FAIL] {meta['ticker']}: {e}", file=sys.stderr)
 
     if not summary_sectors:
         print("수집된 섹터가 하나도 없습니다. 중단.", file=sys.stderr)
         sys.exit(1)
 
-    # 이격도 내림차순 정렬 후 rank 부여 (과열 섹터가 위로)
+    # 섹터: 이격도 내림차순 정렬 후 rank 부여 (과열 섹터가 위로)
     summary_sectors.sort(key=lambda s: s["disparity"], reverse=True)
     for i, s in enumerate(summary_sectors, start=1):
         s["rank"] = i
+    # 지수: 정의한 순서(S&P→나스닥→다우→러셀) 유지
 
-    as_of = max(s["as_of_date"] for s in summary_sectors)
+    all_dates = [s["as_of_date"] for s in summary_sectors] + [s["as_of_date"] for s in summary_indices]
+    as_of = max(all_dates)
     summary = {
         "updated_at": now.isoformat(timespec="seconds"),
         "as_of_date": as_of,
@@ -161,13 +198,14 @@ def build():
             "normal_max": ZONE_NORMAL_MAX,
             "warning_max": ZONE_WARNING_MAX,
         },
+        "indices": summary_indices,
         "sectors": summary_sectors,
     }
     (DATA_DIR / "summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
-    print(f"\n완료: {len(summary_sectors)}/11 섹터 생성, as_of {as_of}")
+    print(f"\n완료: 지수 {len(summary_indices)}/{len(INDICES)} · 섹터 {len(summary_sectors)}/{len(SECTORS)} 생성, as_of {as_of}")
     if errors:
         print(f"실패 티커: {', '.join(errors)}", file=sys.stderr)
         # 일부 실패해도 partial 생성은 허용하되 비정상 종료 코드로 알림

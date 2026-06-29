@@ -1,5 +1,7 @@
 {
   "ticker": "XLF",
+  "symbol": "XLF",
+  "kind": "sector",
   "name_ko": "금융",
   "name_en": "Financial Select Sector SPDR ETF",
   "theme": "금리·신용·자본시장",

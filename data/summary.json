@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-28T17:13:39+09:00",
+  "updated_at": "2026-06-29T17:29:29+09:00",
   "as_of_date": "2026-06-26",
   "ma_period": 50,
   "zones": {
@@ -7,9 +7,65 @@
     "normal_max": 120,
     "warning_max": 130
   },
+  "indices": [
+    {
+      "ticker": "GSPC",
+      "symbol": "^GSPC",
+      "kind": "index",
+      "name_ko": "S&P 500",
+      "name_en": "S&P 500 Index",
+      "theme": "미국 대형주 500",
+      "price": 7354.02,
+      "ma50": 7363.43,
+      "disparity": 99.87,
+      "zone": "cooldown",
+      "as_of_date": "2026-06-26"
+    },
+    {
+      "ticker": "IXIC",
+      "symbol": "^IXIC",
+      "kind": "index",
+      "name_ko": "나스닥 종합",
+      "name_en": "Nasdaq Composite Index",
+      "theme": "기술주 중심 종합지수",
+      "price": 25297.62,
+      "ma50": 25778.76,
+      "disparity": 98.13,
+      "zone": "cooldown",
+      "as_of_date": "2026-06-26"
+    },
+    {
+      "ticker": "DJI",
+      "symbol": "^DJI",
+      "kind": "index",
+      "name_ko": "다우존스",
+      "name_en": "Dow Jones Industrial Average",
+      "theme": "대형 우량주 30",
+      "price": 51876.11,
+      "ma50": 50293.85,
+      "disparity": 103.15,
+      "zone": "cooldown",
+      "as_of_date": "2026-06-26"
+    },
+    {
+      "ticker": "RUT",
+      "symbol": "^RUT",
+      "kind": "index",
+      "name_ko": "러셀 2000",
+      "name_en": "Russell 2000 Index",
+      "theme": "미국 소형주 2000",
+      "price": 3010.08,
+      "ma50": 2863.98,
+      "disparity": 105.1,
+      "zone": "normal",
+      "as_of_date": "2026-06-26"
+    }
+  ],
   "sectors": [
     {
       "ticker": "XLV",
+      "symbol": "XLV",
+      "kind": "sector",
       "name_ko": "헬스케어",
       "name_en": "Health Care Select Sector SPDR ETF",
       "theme": "방어 성장·정책 리스크",
@@ -22,6 +78,8 @@
     },
     {
       "ticker": "XLI",
+      "symbol": "XLI",
+      "kind": "sector",
       "name_ko": "산업재",
       "name_en": "Industrial Select Sector SPDR ETF",
       "theme": "제조·인프라·방산·물류",
@@ -34,6 +92,8 @@
     },
     {
       "ticker": "XLU",
+      "symbol": "XLU",
+      "kind": "sector",
       "name_ko": "유틸리티",
       "name_en": "Utilities Select Sector SPDR ETF",
       "theme": "전력수요·배당·금리",
@@ -46,6 +106,8 @@
     },
     {
       "ticker": "XLF",
+      "symbol": "XLF",
+      "kind": "sector",
       "name_ko": "금융",
       "name_en": "Financial Select Sector SPDR ETF",
       "theme": "금리·신용·자본시장",
@@ -58,6 +120,8 @@
     },
     {
       "ticker": "XLRE",
+      "symbol": "XLRE",
+      "kind": "sector",
       "name_ko": "부동산",
       "name_en": "Real Estate Select Sector SPDR ETF",
       "theme": "금리·REITs·배당",
@@ -70,6 +134,8 @@
     },
     {
       "ticker": "XLK",
+      "symbol": "XLK",
+      "kind": "sector",
       "name_ko": "정보기술",
       "name_en": "Technology Select Sector SPDR ETF",
       "theme": "AI·반도체·소프트웨어",
@@ -82,6 +148,8 @@
     },
     {
       "ticker": "XLP",
+      "symbol": "XLP",
+      "kind": "sector",
       "name_ko": "필수소비재",
       "name_en": "Consumer Staples Select Sector SPDR ETF",
       "theme": "경기 둔화 방어·마진",
@@ -94,6 +162,8 @@
     },
     {
       "ticker": "XLB",
+      "symbol": "XLB",
+      "kind": "sector",
       "name_ko": "소재",
       "name_en": "Materials Select Sector SPDR ETF",
       "theme": "원자재·화학·금속",
@@ -106,6 +176,8 @@
     },
     {
       "ticker": "XLY",
+      "symbol": "XLY",
+      "kind": "sector",
       "name_ko": "임의소비재",
       "name_en": "Consumer Discretionary Select Sector SPDR ETF",
       "theme": "소비 사이클·자동차·이커머스",
@@ -118,6 +190,8 @@
     },
     {
       "ticker": "XLE",
+      "symbol": "XLE",
+      "kind": "sector",
       "name_ko": "에너지",
       "name_en": "Energy Select Sector SPDR ETF",
       "theme": "유가·정제마진·현금흐름",
@@ -130,6 +204,8 @@
     },
     {
       "ticker": "XLC",
+      "symbol": "XLC",
+      "kind": "sector",
       "name_ko": "커뮤니케이션 서비스",
       "name_en": "Communication Services Select Sector SPDR ETF",
       "theme": "광고·미디어·플랫폼",

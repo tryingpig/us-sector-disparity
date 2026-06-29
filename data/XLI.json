@@ -1,5 +1,7 @@
 {
   "ticker": "XLI",
+  "symbol": "XLI",
+  "kind": "sector",
   "name_ko": "산업재",
   "name_en": "Industrial Select Sector SPDR ETF",
   "theme": "제조·인프라·방산·물류",
@@ -5631,7 +5633,7 @@
       "date": "2025-01-15",
       "price": 132.76,
       "ma50": 134.47,
-      "disparity": 98.72
+      "disparity": 98.73
     },
     {
       "date": "2025-01-16",

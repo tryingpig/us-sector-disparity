@@ -1,5 +1,7 @@
 {
   "ticker": "XLB",
+  "symbol": "XLB",
+  "kind": "sector",
   "name_ko": "소재",
   "name_en": "Materials Select Sector SPDR ETF",
   "theme": "원자재·화학·금속",
@@ -2271,7 +2273,7 @@
       "date": "2022-10-20",
       "price": 32.48,
       "ma50": 34.24,
-      "disparity": 94.86
+      "disparity": 94.85
     },
     {
       "date": "2022-10-21",
@@ -5445,7 +5447,7 @@
       "date": "2024-11-27",
       "price": 45.62,
       "ma50": 45.81,
-      "disparity": 99.58
+      "disparity": 99.57
     },
     {
       "date": "2024-11-29",

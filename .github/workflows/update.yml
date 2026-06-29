@@ -2,12 +2,12 @@ name: Update sector disparity data
 
 on:
   schedule:
-    # 평일 22:00 UTC = 07:00 KST (미국 증시 마감 후)
+    # 평일 22:00 UTC = 07:00 KST (미국 증시 마감 후 일봉이 안정적으로 잡힌 뒤)
     - cron: '0 22 * * 1-5'
   workflow_dispatch:        # 수동 실행도 허용
 
 permissions:
-  contents: write
+  contents: write           # data/*.json 커밋·푸시용
 
 jobs:
   update:
@@ -34,7 +34,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/
           if git diff --staged --quiet; then
-            echo "변경 사항 없음 — 커밋 생략"
+            echo "변경 사항 없음 (휴장일 등) — 커밋 생략"
           else
             git commit -m "data: update sector disparity ($(date -u +%Y-%m-%d))"
             git push

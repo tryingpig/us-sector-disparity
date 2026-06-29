@@ -22,6 +22,11 @@ function fmtNum(v, digits = 2) {
   });
 }
 
+// 가격 표기: ETF는 달러($), 지수는 포인트라 기호 없이 숫자만.
+function money(v, kind) {
+  return kind === "index" ? fmtNum(v) : `$${fmtNum(v)}`;
+}
+
 function fmtDateTime(iso) {
   try {
     const d = new Date(iso);
@@ -68,6 +73,33 @@ async function initMain() {
         `<span class="status-pill"><span class="dot" style="background:${ZONE_META[z].color}"></span>${ZONE_META[z].label} <strong>${counts[z]}</strong></span>`
     ).join("")}
   `;
+
+  // 상단 지수 카드 (data.indices, 정의 순서 유지). 없으면 섹션 숨김.
+  const indices = data.indices || [];
+  const idxSection = document.getElementById("index-section");
+  const idxStrip = document.getElementById("index-strip");
+  if (idxStrip) {
+    if (indices.length) {
+      idxStrip.innerHTML = indices
+        .map(
+          (s) => `
+        <div class="index-card ${s.zone}" onclick="location.href='sector.html?ticker=${s.ticker}'">
+          <div class="ic-top">
+            <span class="ic-name">${s.name_ko}</span>
+            <span class="ic-ticker">${s.symbol || s.ticker}</span>
+          </div>
+          <div class="ic-mid">
+            <span class="ic-disp ${s.zone}">${fmtNum(s.disparity, 1)}</span>
+            <span class="badge ${s.zone}">${ZONE_META[s.zone].label}</span>
+          </div>
+          <div class="ic-sub">${money(s.price, s.kind)} · 50일선 ${money(s.ma50, s.kind)}</div>
+        </div>`
+        )
+        .join("");
+    } else if (idxSection) {
+      idxSection.style.display = "none";
+    }
+  }
 
   // 순위표 (이미 summary.json이 이격도 내림차순으로 정렬·rank 부여됨)
   const rows = sectors
@@ -283,6 +315,7 @@ async function initDetail() {
   const series = data.series;
   const last = series[series.length - 1];
   const zone = zoneOf(last.disparity, zones);
+  const kind = data.kind || "sector";
   document.title = `${data.name_ko} (${ticker}) — 이격도 트래커`;
 
   root.innerHTML = `
@@ -294,8 +327,8 @@ async function initDetail() {
     <p class="subtitle" style="color:#9aa0ac;margin:6px 0 0">${data.name_en} · ${data.theme}</p>
 
     <div class="detail-stats">
-      <div class="stat"><div class="label">현재가</div><div class="value">$${fmtNum(last.price)}</div></div>
-      <div class="stat"><div class="label">50일 이동평균</div><div class="value">$${fmtNum(last.ma50)}</div></div>
+      <div class="stat"><div class="label">현재가</div><div class="value">${money(last.price, kind)}</div></div>
+      <div class="stat"><div class="label">50일 이동평균</div><div class="value">${money(last.ma50, kind)}</div></div>
       <div class="stat"><div class="label">이격도</div><div class="value" style="color:${ZONE_META[zone].color}">${fmtNum(last.disparity)}</div></div>
       <div class="stat"><div class="label">기준일</div><div class="value" style="font-size:16px">${last.date}</div></div>
     </div>
@@ -353,8 +386,8 @@ async function initDetail() {
         const z = zoneOf(d.disparity, zones);
         return `<tr style="cursor:default">
           <td class="left">${d.date}</td>
-          <td>$${fmtNum(d.price)}</td>
-          <td>$${fmtNum(d.ma50)}</td>
+          <td>${money(d.price, kind)}</td>
+          <td>${money(d.ma50, kind)}</td>
           <td><span class="disp ${z}" style="font-size:14px">${fmtNum(d.disparity)}</span></td>
           <td><span class="badge ${z}">${ZONE_META[z].label}</span></td>
         </tr>`;

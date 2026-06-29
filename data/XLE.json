@@ -1,5 +1,7 @@
 {
   "ticker": "XLE",
+  "symbol": "XLE",
+  "kind": "sector",
   "name_ko": "에너지",
   "name_en": "Energy Select Sector SPDR ETF",
   "theme": "유가·정제마진·현금흐름",
@@ -7071,7 +7073,7 @@
       "date": "2025-12-30",
       "price": 44.35,
       "ma50": 43.79,
-      "disparity": 101.28
+      "disparity": 101.27
     },
     {
       "date": "2025-12-31",

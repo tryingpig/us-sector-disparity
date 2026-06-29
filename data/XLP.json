@@ -1,5 +1,7 @@
 {
   "ticker": "XLP",
+  "symbol": "XLP",
+  "kind": "sector",
   "name_ko": "필수소비재",
   "name_en": "Consumer Staples Select Sector SPDR ETF",
   "theme": "경기 둔화 방어·마진",
@@ -261,7 +263,7 @@
       "date": "2021-06-23",
       "price": 60.3,
       "ma50": 61.17,
-      "disparity": 98.57
+      "disparity": 98.58
     },
     {
       "date": "2021-06-24",
@@ -6543,7 +6545,7 @@
       "date": "2025-08-25",
       "price": 78.87,
       "ma50": 79.09,
-      "disparity": 99.73
+      "disparity": 99.72
     },
     {
       "date": "2025-08-26",

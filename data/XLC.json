@@ -1,5 +1,7 @@
 {
   "ticker": "XLC",
+  "symbol": "XLC",
+  "kind": "sector",
   "name_ko": "커뮤니케이션 서비스",
   "name_en": "Communication Services Select Sector SPDR ETF",
   "theme": "광고·미디어·플랫폼",
@@ -219,7 +221,7 @@
       "date": "2021-06-14",
       "price": 76.18,
       "ma50": 73.39,
-      "disparity": 103.79
+      "disparity": 103.8
     },
     {
       "date": "2021-06-15",

@@ -1,5 +1,7 @@
 {
   "ticker": "XLV",
+  "symbol": "XLV",
+  "kind": "sector",
   "name_ko": "헬스케어",
   "name_en": "Health Care Select Sector SPDR ETF",
   "theme": "방어 성장·정책 리스크",
@@ -79,7 +81,7 @@
     },
     {
       "date": "2021-05-11",
-      "price": 112.89,
+      "price": 112.88,
       "ma50": 108.43,
       "disparity": 104.11
     },
@@ -1489,7 +1491,7 @@
     },
     {
       "date": "2022-04-14",
-      "price": 129.19,
+      "price": 129.2,
       "ma50": 124.22,
       "disparity": 104.0
     },
@@ -2487,7 +2489,7 @@
       "date": "2022-12-12",
       "price": 131.02,
       "ma50": 123.55,
-      "disparity": 106.04
+      "disparity": 106.05
     },
     {
       "date": "2022-12-13",
@@ -3236,8 +3238,8 @@
     {
       "date": "2023-06-13",
       "price": 124.59,
-      "ma50": 124.9,
-      "disparity": 99.75
+      "ma50": 124.91,
+      "disparity": 99.74
     },
     {
       "date": "2023-06-14",
@@ -5853,7 +5855,7 @@
       "date": "2025-03-11",
       "price": 142.32,
       "ma50": 140.89,
-      "disparity": 101.01
+      "disparity": 101.02
     },
     {
       "date": "2025-03-12",
