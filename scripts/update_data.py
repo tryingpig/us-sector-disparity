@@ -21,7 +21,10 @@ import pandas as pd
 import yfinance as yf
 
 # ── 설정 (상수로 분리: 향후 한 곳만 바꾸면 됨) ──────────────────────────
-MA_PERIOD = 50          # 이동평균 기간 (설계서: 코드에서 상수 하나로 변경 가능)
+MA_SHORT = 10           # 단기 이동평균 (상승장 판정용)
+MA_MID = 20             # 중기 이동평균 (상승장 판정용)
+MA_PERIOD = 50          # 이격도 기준 이동평균
+MA_SLOPE_LOOKBACK = 5   # 이평선 '상승/하락' 판정 기준: 며칠 전 대비 기울기로 볼지(거래일)
 HISTORY_PERIOD = "6y"   # 수집 범위. 5Y 차트 토글 + MA50 워밍업 여유를 위해 넉넉히 받는다
 SERIES_KEEP_DAYS = 1300 # {티커}.json에 보관할 최근 거래일 수 (약 5년치, 차트 기간 토글용)
 
@@ -86,13 +89,61 @@ def fetch_history(ticker: str, retries: int = 3) -> pd.DataFrame:
 
 
 def compute_series(df: pd.DataFrame) -> pd.DataFrame:
-    """종가에서 MA50과 이격도를 계산한 시계열 DataFrame을 만든다."""
+    """종가에서 MA10/20/50과 이격도를 계산한 시계열 DataFrame을 만든다."""
     out = pd.DataFrame(index=df.index)
-    out["price"] = df["Close"].round(2)
-    out["ma50"] = df["Close"].rolling(window=MA_PERIOD, min_periods=MA_PERIOD).mean().round(2)
-    out["disparity"] = (df["Close"] / out["ma50"] * 100).round(2)
+    close = df["Close"]
+    out["price"] = close.round(2)
+    out["ma10"] = close.rolling(window=MA_SHORT, min_periods=MA_SHORT).mean().round(2)
+    out["ma20"] = close.rolling(window=MA_MID, min_periods=MA_MID).mean().round(2)
+    out["ma50"] = close.rolling(window=MA_PERIOD, min_periods=MA_PERIOD).mean().round(2)
+    out["disparity"] = (close / out["ma50"] * 100).round(2)
     out = out.dropna(subset=["ma50", "disparity"])  # MA50 계산 전 구간 제거
     return out
+
+
+def classify_market(series: pd.DataFrame, lookback: int = MA_SLOPE_LOOKBACK) -> dict:
+    """최신 시점의 추세를 10·20일선으로 판정한다 (할투/쿨라매기 추세추종 슬라이드1 규칙).
+
+    상승장 = 10일선 상승 & 20일선 상승 & 10일선 > 20일선
+    하락장 = 10일선 하락 & 20일선 하락 & 10일선 < 20일선
+    그 외   = 횡보장
+    '상승/하락'은 lookback 거래일 전 대비 기울기로 본다.
+    score(-100~100)는 게이지 바늘 위치용 추세 강도(갭+기울기 가중합).
+    """
+    if len(series) <= lookback:
+        return None
+    ma10, ma20 = series["ma10"], series["ma20"]
+    n10, n20 = float(ma10.iloc[-1]), float(ma20.iloc[-1])
+    p10, p20 = float(ma10.iloc[-1 - lookback]), float(ma20.iloc[-1 - lookback])
+    up10, up20, cross = n10 > p10, n20 > p20, n10 > n20
+    if up10 and up20 and cross:
+        state, label = "bull", "상승장"
+    elif (not up10) and (not up20) and (not cross):
+        state, label = "bear", "하락장"
+    else:
+        state, label = "sideways", "횡보장"
+
+    spread = (n10 - n20) / n20 * 100      # 10·20선 이격(%)
+    s10 = (n10 / p10 - 1) * 100           # 10일선 기울기(%)
+    s20 = (n20 / p20 - 1) * 100           # 20일선 기울기(%)
+
+    def clamp(x, lo, hi):
+        return max(lo, min(hi, x))
+
+    score = (0.4 * clamp(spread / 2.0, -1, 1)
+             + 0.3 * clamp(s10 / 3.0, -1, 1)
+             + 0.3 * clamp(s20 / 2.0, -1, 1)) * 100
+    return {
+        "state": state,
+        "label": label,
+        "score": round(score, 1),
+        "cross": cross,
+        "up10": up10,
+        "up20": up20,
+        "spread_pct": round(spread, 2),
+        "slope10_pct": round(s10, 2),
+        "slope20_pct": round(s20, 2),
+    }
 
 
 def process_entry(meta: dict, kind: str) -> dict:
@@ -113,6 +164,7 @@ def process_entry(meta: dict, kind: str) -> dict:
     last = series.iloc[-1]
     as_of_date = series.index[-1].strftime("%Y-%m-%d")
     disparity = float(last["disparity"])
+    market = classify_market(series)
 
     # 개별 시계열 JSON (최근 SERIES_KEEP_DAYS 일)
     tail = series.tail(SERIES_KEEP_DAYS)
@@ -124,10 +176,15 @@ def process_entry(meta: dict, kind: str) -> dict:
         "name_en": meta["name_en"],
         "theme": meta["theme"],
         "ma_period": MA_PERIOD,
+        "ma_periods": [MA_SHORT, MA_MID, MA_PERIOD],
+        "slope_lookback": MA_SLOPE_LOOKBACK,
+        "market": market,
         "series": [
             {
                 "date": idx.strftime("%Y-%m-%d"),
                 "price": float(row["price"]),
+                "ma10": float(row["ma10"]),
+                "ma20": float(row["ma20"]),
                 "ma50": float(row["ma50"]),
                 "disparity": float(row["disparity"]),
             }
@@ -138,7 +195,8 @@ def process_entry(meta: dict, kind: str) -> dict:
         json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
-    print(f"  [OK] {symbol:6s} 이격도 {disparity:6.2f}%  ({classify_zone(disparity)})  as_of {as_of_date}")
+    mlabel = market["label"] if market else "-"
+    print(f"  [OK] {symbol:6s} 이격도 {disparity:6.2f}%  ({classify_zone(disparity)})  추세 {mlabel}  as_of {as_of_date}")
     return {
         "ticker": file_id,
         "symbol": symbol,
@@ -147,9 +205,12 @@ def process_entry(meta: dict, kind: str) -> dict:
         "name_en": meta["name_en"],
         "theme": meta["theme"],
         "price": float(last["price"]),
+        "ma10": float(last["ma10"]),
+        "ma20": float(last["ma20"]),
         "ma50": float(last["ma50"]),
         "disparity": disparity,
         "zone": classify_zone(disparity),
+        "market": market,
         "as_of_date": as_of_date,
     }
 
@@ -193,6 +254,8 @@ def build():
         "updated_at": now.isoformat(timespec="seconds"),
         "as_of_date": as_of,
         "ma_period": MA_PERIOD,
+        "ma_periods": [MA_SHORT, MA_MID, MA_PERIOD],
+        "slope_lookback": MA_SLOPE_LOOKBACK,
         "zones": {
             "cooldown_max": ZONE_COOLDOWN_MAX,
             "normal_max": ZONE_NORMAL_MAX,

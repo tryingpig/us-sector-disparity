@@ -124,7 +124,17 @@ a { color: inherit; text-decoration: none; }
 .index-card .ic-disp.warning    { color: var(--zone-warning); }
 .index-card .ic-disp.normal     { color: var(--zone-normal); }
 .index-card .ic-disp.cooldown   { color: var(--zone-cooldown); }
+.index-card .ic-market { margin-top: 8px; }
 .index-card .ic-sub { margin-top: 10px; font-size: 11.5px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+/* 시장 추세 칩 (상승장/횡보장/하락장) */
+.market-chip {
+  display: inline-block; font-size: 12px; font-weight: 700;
+  padding: 3px 10px; border-radius: 999px; white-space: nowrap;
+}
+.market-chip.bull     { color: var(--zone-normal);     background: var(--normal-bg); }
+.market-chip.sideways { color: var(--zone-warning);    background: var(--warning-bg); }
+.market-chip.bear     { color: var(--zone-overheated); background: var(--overheated-bg); }
 
 /* ── 순위표 ───────────────────────────────────────────── */
 .rank-table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -236,11 +246,17 @@ a { color: inherit; text-decoration: none; }
 .chart-box.short { height: 240px; }
 
 /* 게이지 */
-.gauge-wrap { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.gauge-wrap { display: flex; align-items: flex-start; gap: 28px; flex-wrap: wrap; justify-content: center; }
+.gauge-unit { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.gauge-label { font-size: 12px; color: var(--text-faint); font-weight: 600; }
 .gauge { position: relative; width: 220px; height: 120px; }
 .gauge-readout { text-align: center; }
 .gauge-readout .g-val { font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; }
-.gauge-readout .g-zone { font-size: 14px; font-weight: 700; margin-top: 2px; }
+.gauge-readout .g-zone { font-size: 16px; font-weight: 700; margin-top: 2px; }
+.gauge-readout .g-sub { font-size: 11.5px; color: var(--text-dim); margin-top: 4px; font-variant-numeric: tabular-nums; }
+
+/* 차트 보조 설명 */
+.chart-note { font-size: 12.5px; color: var(--text-dim); margin: -4px 0 12px; }
 
 .loading { text-align: center; color: var(--text-faint); padding: 40px; }
 .error-box { text-align: center; color: var(--zone-overheated); padding: 30px; font-size: 14px; }

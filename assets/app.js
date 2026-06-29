@@ -12,6 +12,13 @@ const ZONE_META = {
 
 const ZONE_ORDER = ["overheated", "warning", "normal", "cooldown"];
 
+// 시장 추세(10/20일선 기준 상승장/횡보장/하락장)
+const MARKET_META = {
+  bull:     { label: "상승장", color: "#22c55e" },
+  sideways: { label: "횡보장", color: "#f59e0b" },
+  bear:     { label: "하락장", color: "#ef4444" },
+};
+
 // 데이터 경로(상대). index.html / sector.html 모두 루트에 있으므로 동일.
 const DATA_BASE = "data";
 
@@ -88,6 +95,7 @@ async function initMain() {
             <span class="ic-name">${s.name_ko}</span>
             <span class="ic-ticker">${s.symbol || s.ticker}</span>
           </div>
+          ${s.market ? `<div class="ic-market"><span class="market-chip ${s.market.state}">${s.market.label}</span></div>` : ""}
           <div class="ic-mid">
             <span class="ic-disp ${s.zone}">${fmtNum(s.disparity, 1)}</span>
             <span class="badge ${s.zone}">${ZONE_META[s.zone].label}</span>
@@ -227,13 +235,56 @@ function buildGauge(disparity, zone) {
     </svg>`;
 }
 
-let priceChart, dispChart;
+// 추세 게이지(SVG): 하락 ← 횡보 → 상승. score(-100~100)를 호에 매핑.
+function buildTrendGauge(market) {
+  const MIN = -100, MAX = 100;
+  const score = market ? Math.max(MIN, Math.min(MAX, market.score)) : 0;
+  const frac = (score - MIN) / (MAX - MIN);
+  const angle = Math.PI * (1 - frac);
+  const cx = 110, cy = 110, r = 92;
+
+  const segs = [
+    { from: -100, to: -33, color: "#ef4444" }, // 하락
+    { from: -33,  to: 33,  color: "#f59e0b" }, // 횡보
+    { from: 33,   to: 100, color: "#22c55e" }, // 상승
+  ];
+  const polar = (val) => {
+    const f = (val - MIN) / (MAX - MIN);
+    const a = Math.PI * (1 - f);
+    return [cx + r * Math.cos(a), cy - r * Math.sin(a)];
+  };
+  const arcs = segs
+    .map((s) => {
+      const [x1, y1] = polar(s.from);
+      const [x2, y2] = polar(s.to);
+      return `<path d="M ${x1.toFixed(1)} ${y1.toFixed(1)} A ${r} ${r} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}"
+        fill="none" stroke="${s.color}" stroke-width="14" stroke-linecap="butt" opacity="0.85"/>`;
+    })
+    .join("");
+  const nx = cx + (r - 18) * Math.cos(angle);
+  const ny = cy - (r - 18) * Math.sin(angle);
+  const color = market ? MARKET_META[market.state].color : "#6b7280";
+
+  return `
+    <svg viewBox="0 0 220 130" class="gauge-svg" width="220" height="130">
+      ${arcs}
+      <line x1="${cx}" y1="${cy}" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}"
+        stroke="${color}" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="${cx}" cy="${cy}" r="7" fill="${color}"/>
+      <text x="16" y="125" fill="#6b7280" font-size="11">하락</text>
+      <text x="186" y="125" fill="#6b7280" font-size="11" text-anchor="end">상승</text>
+    </svg>`;
+}
+
+let priceChart, dispChart, trendChart;
 
 function renderCharts(series, zones, rangeDays) {
   const data = series.slice(-rangeDays);
   const labels = data.map((d) => d.date);
   const prices = data.map((d) => d.price);
   const ma50 = data.map((d) => d.ma50);
+  const ma10 = data.map((d) => d.ma10);
+  const ma20 = data.map((d) => d.ma20);
   const disp = data.map((d) => d.disparity);
 
   const gridColor = "rgba(255,255,255,0.05)";
@@ -288,6 +339,23 @@ function renderCharts(series, zones, rangeDays) {
     },
     options: dOpts,
   });
+
+  // 추세 미니차트: 10일선 vs 20일선 (상승장 판정 = 10>20 & 둘 다 우상향)
+  const trendCanvas = document.getElementById("trendChart");
+  if (trendCanvas) {
+    if (trendChart) trendChart.destroy();
+    trendChart = new Chart(trendCanvas, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [
+          { label: "10일선", data: ma10, borderColor: "#22c55e", borderWidth: 2, pointRadius: 0, tension: 0.1 },
+          { label: "20일선", data: ma20, borderColor: "#a06ad4", borderWidth: 1.5, pointRadius: 0, tension: 0.1 },
+        ],
+      },
+      options: baseOpts(),
+    });
+  }
 }
 
 async function initDetail() {
@@ -316,12 +384,14 @@ async function initDetail() {
   const last = series[series.length - 1];
   const zone = zoneOf(last.disparity, zones);
   const kind = data.kind || "sector";
+  const market = data.market;
   document.title = `${data.name_ko} (${ticker}) — 이격도 트래커`;
 
   root.innerHTML = `
     <div class="detail-head">
       <span class="ticker-lg">${ticker}</span>
       <h1>${data.name_ko}</h1>
+      ${market ? `<span class="market-chip ${market.state}">${market.label}</span>` : ""}
       <span class="badge ${zone}">${ZONE_META[zone].label}</span>
     </div>
     <p class="subtitle" style="color:#9aa0ac;margin:6px 0 0">${data.name_en} · ${data.theme}</p>
@@ -334,12 +404,23 @@ async function initDetail() {
     </div>
 
     <section class="card">
-      <h2>현재 이격도 게이지</h2>
+      <h2>시장 추세 · 이격도 게이지</h2>
       <div class="gauge-wrap">
-        <div class="gauge">${buildGauge(last.disparity, zone)}</div>
-        <div class="gauge-readout">
-          <div class="g-val" style="color:${ZONE_META[zone].color}">${fmtNum(last.disparity)}</div>
-          <div class="g-zone" style="color:${ZONE_META[zone].color}">${ZONE_META[zone].label}</div>
+        <div class="gauge-unit">
+          <div class="gauge-label">추세 (10·20일선)</div>
+          <div class="gauge">${buildTrendGauge(market)}</div>
+          <div class="gauge-readout">
+            <div class="g-zone" style="color:${market ? MARKET_META[market.state].color : "#6b7280"}">${market ? market.label : "-"}</div>
+            ${market ? `<div class="g-sub">10&gt;20 ${market.cross ? "✓" : "✗"} · 10일↑ ${market.up10 ? "✓" : "✗"} · 20일↑ ${market.up20 ? "✓" : "✗"}</div>` : ""}
+          </div>
+        </div>
+        <div class="gauge-unit">
+          <div class="gauge-label">이격도 (50일선)</div>
+          <div class="gauge">${buildGauge(last.disparity, zone)}</div>
+          <div class="gauge-readout">
+            <div class="g-val" style="color:${ZONE_META[zone].color}">${fmtNum(last.disparity)}</div>
+            <div class="g-zone" style="color:${ZONE_META[zone].color}">${ZONE_META[zone].label}</div>
+          </div>
         </div>
       </div>
     </section>
@@ -350,6 +431,12 @@ async function initDetail() {
         <div class="range-toggle" id="range-toggle"></div>
       </div>
       <div class="chart-box"><canvas id="priceChart"></canvas></div>
+    </section>
+
+    <section class="card">
+      <h2>추세 (10일선 vs 20일선)</h2>
+      <p class="chart-note">10일선이 20일선 위에 있고 둘 다 우상향이면 <strong style="color:#22c55e">상승장</strong>입니다.</p>
+      <div class="chart-box short"><canvas id="trendChart"></canvas></div>
     </section>
 
     <section class="card">
