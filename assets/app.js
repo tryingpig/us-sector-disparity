@@ -427,16 +427,16 @@ async function initDetail() {
 
     <section class="card">
       <div class="card-head">
-        <h2>가격 + 50일 이동평균</h2>
+        <h2>추세 (10일선 vs 20일선)</h2>
         <div class="range-toggle" id="range-toggle"></div>
       </div>
-      <div class="chart-box"><canvas id="priceChart"></canvas></div>
+      <p class="chart-note">10일선이 20일선 위에 있고 둘 다 우상향이면 <strong style="color:#22c55e">상승장</strong>입니다.</p>
+      <div class="chart-box short"><canvas id="trendChart"></canvas></div>
     </section>
 
     <section class="card">
-      <h2>추세 (10일선 vs 20일선)</h2>
-      <p class="chart-note">10일선이 20일선 위에 있고 둘 다 우상향이면 <strong style="color:#22c55e">상승장</strong>입니다.</p>
-      <div class="chart-box short"><canvas id="trendChart"></canvas></div>
+      <h2>가격 + 50일 이동평균</h2>
+      <div class="chart-box"><canvas id="priceChart"></canvas></div>
     </section>
 
     <section class="card">
