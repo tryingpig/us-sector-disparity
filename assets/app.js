@@ -122,6 +122,7 @@ async function initMain() {
       <td class="left"><span class="ticker">${s.ticker}</span></td>
       <td class="hide-sm">$${fmtNum(s.price)}</td>
       <td class="hide-sm">$${fmtNum(s.ma50)}</td>
+      <td>${s.market ? `<span class="market-chip ${s.market.state}">${s.market.label}</span>` : ""}</td>
       <td><span class="disp ${s.zone}">${fmtNum(s.disparity)}</span></td>
       <td><span class="badge ${s.zone}">${ZONE_META[s.zone].label}</span></td>
       <td class="arrow">›</td>
@@ -138,6 +139,7 @@ async function initMain() {
           <th class="left">티커</th>
           <th class="hide-sm">현재가</th>
           <th class="hide-sm">50일선</th>
+          <th>추세</th>
           <th>이격도</th>
           <th>구간</th>
           <th></th>
