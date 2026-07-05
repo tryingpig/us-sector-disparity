@@ -119,7 +119,7 @@ async function initMain() {
         <div class="sector-name">${s.name_ko}</div>
         <div class="sector-theme hide-sm">${s.theme}</div>
       </td>
-      <td class="left"><span class="ticker">${s.ticker}</span></td>
+      <td class="left hide-sm"><span class="ticker">${s.ticker}</span></td>
       <td class="hide-sm">$${fmtNum(s.price)}</td>
       <td class="hide-sm">$${fmtNum(s.ma50)}</td>
       <td>${s.market ? `<span class="market-chip ${s.market.state}">${s.market.label}</span>` : ""}</td>
@@ -136,7 +136,7 @@ async function initMain() {
         <tr>
           <th class="left">#</th>
           <th class="left">섹터</th>
-          <th class="left">티커</th>
+          <th class="left hide-sm">티커</th>
           <th class="hide-sm">현재가</th>
           <th class="hide-sm">50일선</th>
           <th>추세</th>
