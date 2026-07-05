@@ -118,6 +118,7 @@ async function initMain() {
       <td class="left">
         <div class="sector-name">${s.name_ko}</div>
         <div class="sector-theme hide-sm">${s.theme}</div>
+        <div class="sector-sub show-sm"><span class="ticker">${s.ticker}</span></div>
       </td>
       <td class="left hide-sm"><span class="ticker">${s.ticker}</span></td>
       <td class="hide-sm">$${fmtNum(s.price)}</td>
