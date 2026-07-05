@@ -278,9 +278,9 @@ function buildTrendGauge(market) {
     </svg>`;
 }
 
-let priceChart, dispChart, trendChart;
+let priceChart, dispChart, trendChart, comboChart;
 
-function renderCharts(series, zones, rangeDays) {
+function renderCharts(series, zones, rangeDays, kind = "sector") {
   const data = series.slice(-rangeDays);
   const labels = data.map((d) => d.date);
   const prices = data.map((d) => d.price);
@@ -341,6 +341,56 @@ function renderCharts(series, zones, rangeDays) {
     },
     options: dOpts,
   });
+
+  // 종합: 지수(종가) + 50일선 (좌축) + 이격도 막대 (우축).
+  // 이격도 막대는 100(= 50일선과 동일) 기준으로 위(과열)/아래(과열해소)로 뻗는다.
+  const comboCanvas = document.getElementById("comboChart");
+  if (comboCanvas) {
+    if (comboChart) comboChart.destroy();
+    const priceLabel = kind === "index" ? "지수" : "종가";
+    comboChart = new Chart(comboCanvas, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [
+          {
+            type: "bar", label: "50일 이격도 (우)", data: disp, yAxisID: "y1",
+            base: 100, order: 3,
+            backgroundColor: "rgba(245,197,66,0.55)", borderColor: "rgba(245,197,66,0.9)", borderWidth: 0,
+            categoryPercentage: 1.0, barPercentage: 1.0,
+          },
+          {
+            type: "line", label: priceLabel, data: prices, yAxisID: "y",
+            order: 1, borderColor: "#e5e7eb", borderWidth: 1.6, pointRadius: 0, tension: 0.1,
+          },
+          {
+            type: "line", label: "50일선", data: ma50, yAxisID: "y",
+            order: 2, borderColor: "#8ba3c7", borderWidth: 2.6, pointRadius: 0, tension: 0.25,
+          },
+        ],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: { labels: { color: "#9aa0ac", boxWidth: 14, font: { size: 12 } } },
+          tooltip: { mode: "index", intersect: false },
+        },
+        scales: {
+          x: { ticks: { color: tickColor, maxTicksLimit: 7, font: { size: 11 } }, grid: { color: gridColor } },
+          y: {
+            position: "left", ticks: { color: tickColor, font: { size: 11 } }, grid: { color: gridColor },
+            title: { display: true, text: kind === "index" ? "지수" : "가격($)", color: tickColor, font: { size: 10 } },
+          },
+          y1: {
+            position: "right", beginAtZero: false,
+            ticks: { color: "#e0b43a", font: { size: 11 } }, grid: { drawOnChartArea: false },
+            title: { display: true, text: "이격도(%)", color: "#e0b43a", font: { size: 10 } },
+          },
+        },
+      },
+    });
+  }
 
   // 추세 미니차트: 10일선 vs 20일선 (상승장 판정 = 10>20 & 둘 다 우상향)
   const trendCanvas = document.getElementById("trendChart");
@@ -446,6 +496,12 @@ async function initDetail() {
       <div class="chart-box"><canvas id="dispChart"></canvas></div>
     </section>
 
+    <section class="card">
+      <h2>종합 — 지수 · 50일선 · 이격도</h2>
+      <p class="chart-note">지수와 50일선은 <strong>좌축</strong>, 이격도 막대는 <strong>우축</strong>입니다. 막대는 <strong>100(50일선과 동일)</strong> 기준으로 위=과열 / 아래=과열 해소를 나타냅니다.</p>
+      <div class="chart-box"><canvas id="comboChart"></canvas></div>
+    </section>
+
     <section class="card method">
       <h2>이그전 해석법 요약</h2>
       <ul>
@@ -496,13 +552,13 @@ async function initDetail() {
       b.onclick = () => {
         activeKey = b.dataset.key;
         drawToggle();
-        renderCharts(series, zones, Number(b.dataset.days));
+        renderCharts(series, zones, Number(b.dataset.days), kind);
       };
     });
   }
   drawToggle();
   const initDays = RANGES.find((r) => r.key === activeKey).days;
-  renderCharts(series, zones, initDays);
+  renderCharts(series, zones, initDays, kind);
 }
 
 /* ── 페이지 자동 초기화 ──────────────────────────────── */
