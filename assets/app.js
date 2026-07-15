@@ -488,6 +488,12 @@ async function initDetail() {
     </section>
 
     <section class="card">
+      <h2>종합 — 지수 · 100일선 · 이격도</h2>
+      <p class="chart-note">지수와 100일선은 <strong>좌축</strong>, 이격도 막대는 <strong>우축</strong>입니다. 막대는 <strong>100(100일선과 동일)</strong> 기준으로 위=과열 / 아래=과열 해소를 나타냅니다.</p>
+      <div class="chart-box"><canvas id="comboChart"></canvas></div>
+    </section>
+
+    <section class="card">
       <h2>가격 + 100일 이동평균</h2>
       <div class="chart-box"><canvas id="priceChart"></canvas></div>
     </section>
@@ -495,12 +501,6 @@ async function initDetail() {
     <section class="card">
       <h2>이격도 추이 (105 · 130 기준선)</h2>
       <div class="chart-box"><canvas id="dispChart"></canvas></div>
-    </section>
-
-    <section class="card">
-      <h2>종합 — 지수 · 100일선 · 이격도</h2>
-      <p class="chart-note">지수와 100일선은 <strong>좌축</strong>, 이격도 막대는 <strong>우축</strong>입니다. 막대는 <strong>100(100일선과 동일)</strong> 기준으로 위=과열 / 아래=과열 해소를 나타냅니다.</p>
-      <div class="chart-box"><canvas id="comboChart"></canvas></div>
     </section>
 
     <section class="card method">
