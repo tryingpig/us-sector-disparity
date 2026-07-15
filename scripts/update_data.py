@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-미국 섹터 ETF 50일 이격도 트래커 — 데이터 수집/계산 스크립트
+미국 섹터 ETF 100일 이격도 트래커 — 데이터 수집/계산 스크립트
 
 GICS 11개 섹터 SPDR ETF의 일봉을 yfinance로 받아
-50일 이동평균(SMA)과 이격도를 구하고, 고정 임계값으로 구간을 판정해
+100일 이동평균(SMA)과 이격도를 구하고, 고정 임계값으로 구간을 판정해
 data/summary.json (메인 순위표용)과 data/{티커}.json (섹터별 시계열)을 생성한다.
 
-이격도(%) = 당일 종가 / 50일 이동평균 * 100
+이격도(%) = 당일 종가 / 100일 이동평균 * 100
 구간 기준(이그전 코스피 기준값 고정 적용): >=130 과열 / 120-130 경계 / 105-120 정상 / <=105 과열해소
 """
 
@@ -23,9 +23,9 @@ import yfinance as yf
 # ── 설정 (상수로 분리: 향후 한 곳만 바꾸면 됨) ──────────────────────────
 MA_SHORT = 10           # 단기 이동평균 (상승장 판정용)
 MA_MID = 20             # 중기 이동평균 (상승장 판정용)
-MA_PERIOD = 50          # 이격도 기준 이동평균
+MA_PERIOD = 100          # 이격도 기준 이동평균
 MA_SLOPE_LOOKBACK = 5   # 이평선 '상승/하락' 판정 기준: 며칠 전 대비 기울기로 볼지(거래일)
-HISTORY_PERIOD = "6y"   # 수집 범위. 5Y 차트 토글 + MA50 워밍업 여유를 위해 넉넉히 받는다
+HISTORY_PERIOD = "6y"   # 수집 범위. 5Y 차트 토글 + MA100 워밍업 여유를 위해 넉넉히 받는다
 SERIES_KEEP_DAYS = 1300 # {티커}.json에 보관할 최근 거래일 수 (약 5년치, 차트 기간 토글용)
 
 # 구간 임계값 (고정)
@@ -95,9 +95,9 @@ def compute_series(df: pd.DataFrame) -> pd.DataFrame:
     out["price"] = close.round(2)
     out["ma10"] = close.rolling(window=MA_SHORT, min_periods=MA_SHORT).mean().round(2)
     out["ma20"] = close.rolling(window=MA_MID, min_periods=MA_MID).mean().round(2)
-    out["ma50"] = close.rolling(window=MA_PERIOD, min_periods=MA_PERIOD).mean().round(2)
-    out["disparity"] = (close / out["ma50"] * 100).round(2)
-    out = out.dropna(subset=["ma50", "disparity"])  # MA50 계산 전 구간 제거
+    out["ma100"] = close.rolling(window=MA_PERIOD, min_periods=MA_PERIOD).mean().round(2)
+    out["disparity"] = (close / out["ma100"] * 100).round(2)
+    out = out.dropna(subset=["ma100", "disparity"])  # MA100 계산 전 구간 제거
     return out
 
 
@@ -159,7 +159,7 @@ def process_entry(meta: dict, kind: str) -> dict:
     df = fetch_history(symbol)
     series = compute_series(df)
     if series.empty:
-        raise RuntimeError("MA50 계산 가능한 데이터 부족")
+        raise RuntimeError("MA100 계산 가능한 데이터 부족")
 
     last = series.iloc[-1]
     as_of_date = series.index[-1].strftime("%Y-%m-%d")
@@ -185,7 +185,7 @@ def process_entry(meta: dict, kind: str) -> dict:
                 "price": float(row["price"]),
                 "ma10": float(row["ma10"]),
                 "ma20": float(row["ma20"]),
-                "ma50": float(row["ma50"]),
+                "ma100": float(row["ma100"]),
                 "disparity": float(row["disparity"]),
             }
             for idx, row in tail.iterrows()
@@ -207,7 +207,7 @@ def process_entry(meta: dict, kind: str) -> dict:
         "price": float(last["price"]),
         "ma10": float(last["ma10"]),
         "ma20": float(last["ma20"]),
-        "ma50": float(last["ma50"]),
+        "ma100": float(last["ma100"]),
         "disparity": disparity,
         "zone": classify_zone(disparity),
         "market": market,

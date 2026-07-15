@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>미국 섹터 ETF 이격도 트래커</title>
-  <meta name="description" content="GICS 11개 섹터 SPDR ETF의 50일 이격도를 매일 자동 추적하는 대시보드. 이그전(이은택의 그림전략) 해석법 기반." />
+  <meta name="description" content="GICS 11개 섹터 SPDR ETF의 100일 이격도를 매일 자동 추적하는 대시보드. 이그전(이은택의 그림전략) 해석법 기반." />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <link rel="stylesheet" href="assets/style.css" />
@@ -14,7 +14,7 @@
     <header class="site-header">
       <div class="emoji">📊</div>
       <h1>미국 섹터 ETF 이격도 트래커</h1>
-      <p class="subtitle">미국 주요 지수 + GICS 11개 섹터 SPDR ETF · 50일 이격도 기반 (이그전 해석법)</p>
+      <p class="subtitle">미국 주요 지수 + GICS 11개 섹터 SPDR ETF · 100일 이격도 기반 (이그전 해석법)</p>
     </header>
 
     <div id="status-bar" class="status-bar">
@@ -53,8 +53,8 @@
 
     <section class="card method">
       <h2>이격도란?</h2>
-      <p><code>이격도(%) = 당일 종가 ÷ 50일 이동평균 × 100</code></p>
-      <p>가격이 50일 평균선 대비 얼마나 위/아래에 있는지를 나타내는 비율 지표입니다. ETF 가격은 달러 기준이지만 이격도는 비율이라 환율과 무관합니다. 이은택의 그림전략(이그전)에서 제시한 코스피 기준값(105/120/130)을 11개 섹터 전체에 동일하게 적용합니다.</p>
+      <p><code>이격도(%) = 당일 종가 ÷ 100일 이동평균 × 100</code></p>
+      <p>가격이 100일 평균선 대비 얼마나 위/아래에 있는지를 나타내는 비율 지표입니다. ETF 가격은 달러 기준이지만 이격도는 비율이라 환율과 무관합니다. 이은택의 그림전략(이그전)에서 제시한 코스피 기준값(105/120/130)을 11개 섹터 전체에 동일하게 적용합니다.</p>
       <ul>
         <li><strong style="color:#ef4444">과열 (≥130)</strong> — 추격매수(패닉 바잉) 자제</li>
         <li><strong style="color:#f59e0b">경계 (120–130)</strong> — 분할·속도 조절 관심</li>

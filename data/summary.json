@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-07-15T08:38:28+09:00",
+  "updated_at": "2026-07-15T09:15:35+09:00",
   "as_of_date": "2026-07-14",
-  "ma_period": 50,
+  "ma_period": 100,
   "ma_periods": [
     10,
     20,
-    50
+    100
   ],
   "slope_lookback": 5,
   "zones": {
@@ -24,9 +24,9 @@
       "price": 7543.59,
       "ma10": 7516.78,
       "ma20": 7475.13,
-      "ma50": 7447.4,
-      "disparity": 101.29,
-      "zone": "cooldown",
+      "ma100": 7130.98,
+      "disparity": 105.79,
+      "zone": "normal",
       "market": {
         "state": "bull",
         "label": "상승장",
@@ -50,9 +50,9 @@
       "price": 26107.01,
       "ma10": 26036.56,
       "ma20": 25983.61,
-      "ma50": 26096.78,
-      "disparity": 100.04,
-      "zone": "cooldown",
+      "ma100": 24486.77,
+      "disparity": 106.62,
+      "zone": "normal",
       "market": {
         "state": "bull",
         "label": "상승장",
@@ -76,9 +76,9 @@
       "price": 52508.27,
       "ma10": 52598.53,
       "ma20": 52196.06,
-      "ma50": 51027.75,
-      "disparity": 102.9,
-      "zone": "cooldown",
+      "ma100": 49442.87,
+      "disparity": 106.2,
+      "zone": "normal",
       "market": {
         "state": "bull",
         "label": "상승장",
@@ -102,9 +102,9 @@
       "price": 2964.76,
       "ma10": 2986.98,
       "ma20": 2983.33,
-      "ma50": 2911.87,
-      "disparity": 101.82,
-      "zone": "cooldown",
+      "ma100": 2762.09,
+      "disparity": 107.34,
+      "zone": "normal",
       "market": {
         "state": "sideways",
         "label": "횡보장",
@@ -121,6 +121,33 @@
   ],
   "sectors": [
     {
+      "ticker": "XLK",
+      "symbol": "XLK",
+      "kind": "sector",
+      "name_ko": "정보기술",
+      "name_en": "Technology Select Sector SPDR ETF",
+      "theme": "AI·반도체·소프트웨어",
+      "price": 183.62,
+      "ma10": 183.69,
+      "ma20": 185.1,
+      "ma100": 162.15,
+      "disparity": 113.24,
+      "zone": "normal",
+      "market": {
+        "state": "sideways",
+        "label": "횡보장",
+        "score": -12.1,
+        "cross": false,
+        "up10": false,
+        "up20": true,
+        "spread_pct": -0.76,
+        "slope10_pct": -0.05,
+        "slope20_pct": 0.24
+      },
+      "as_of_date": "2026-07-14",
+      "rank": 1
+    },
+    {
       "ticker": "XLF",
       "symbol": "XLF",
       "kind": "sector",
@@ -130,8 +157,8 @@
       "price": 56.18,
       "ma10": 55.47,
       "ma20": 54.57,
-      "ma50": 52.74,
-      "disparity": 106.52,
+      "ma100": 51.57,
+      "disparity": 108.94,
       "zone": "normal",
       "market": {
         "state": "bull",
@@ -145,7 +172,7 @@
         "slope20_pct": 1.54
       },
       "as_of_date": "2026-07-14",
-      "rank": 1
+      "rank": 2
     },
     {
       "ticker": "XLV",
@@ -157,9 +184,9 @@
       "price": 158.29,
       "ma10": 161.34,
       "ma20": 157.45,
-      "ma50": 151.52,
-      "disparity": 104.47,
-      "zone": "cooldown",
+      "ma100": 150.1,
+      "disparity": 105.46,
+      "zone": "normal",
       "market": {
         "state": "bull",
         "label": "상승장",
@@ -172,7 +199,7 @@
         "slope20_pct": 1.3
       },
       "as_of_date": "2026-07-14",
-      "rank": 2
+      "rank": 3
     },
     {
       "ticker": "XLI",
@@ -184,8 +211,8 @@
       "price": 180.45,
       "ma10": 182.47,
       "ma20": 181.51,
-      "ma50": 176.32,
-      "disparity": 102.34,
+      "ma100": 172.7,
+      "disparity": 104.49,
       "zone": "cooldown",
       "market": {
         "state": "sideways",
@@ -199,88 +226,7 @@
         "slope20_pct": 1.01
       },
       "as_of_date": "2026-07-14",
-      "rank": 3
-    },
-    {
-      "ticker": "XLU",
-      "symbol": "XLU",
-      "kind": "sector",
-      "name_ko": "유틸리티",
-      "name_en": "Utilities Select Sector SPDR ETF",
-      "theme": "전력수요·배당·금리",
-      "price": 45.69,
-      "ma10": 45.42,
-      "ma20": 45.27,
-      "ma50": 44.75,
-      "disparity": 102.1,
-      "zone": "cooldown",
-      "market": {
-        "state": "sideways",
-        "label": "횡보장",
-        "score": 18.2,
-        "cross": true,
-        "up10": false,
-        "up20": true,
-        "spread_pct": 0.33,
-        "slope10_pct": -0.29,
-        "slope20_pct": 0.96
-      },
-      "as_of_date": "2026-07-14",
       "rank": 4
-    },
-    {
-      "ticker": "XLE",
-      "symbol": "XLE",
-      "kind": "sector",
-      "name_ko": "에너지",
-      "name_en": "Energy Select Sector SPDR ETF",
-      "theme": "유가·정제마진·현금흐름",
-      "price": 56.95,
-      "ma10": 54.61,
-      "ma20": 54.37,
-      "ma50": 56.37,
-      "disparity": 101.03,
-      "zone": "cooldown",
-      "market": {
-        "state": "sideways",
-        "label": "횡보장",
-        "score": 16.6,
-        "cross": true,
-        "up10": true,
-        "up20": false,
-        "spread_pct": 0.44,
-        "slope10_pct": 1.79,
-        "slope20_pct": -0.68
-      },
-      "as_of_date": "2026-07-14",
-      "rank": 5
-    },
-    {
-      "ticker": "XLK",
-      "symbol": "XLK",
-      "kind": "sector",
-      "name_ko": "정보기술",
-      "name_en": "Technology Select Sector SPDR ETF",
-      "theme": "AI·반도체·소프트웨어",
-      "price": 183.62,
-      "ma10": 183.69,
-      "ma20": 185.1,
-      "ma50": 181.81,
-      "disparity": 101.0,
-      "zone": "cooldown",
-      "market": {
-        "state": "sideways",
-        "label": "횡보장",
-        "score": -12.1,
-        "cross": false,
-        "up10": false,
-        "up20": true,
-        "spread_pct": -0.76,
-        "slope10_pct": -0.05,
-        "slope20_pct": 0.24
-      },
-      "as_of_date": "2026-07-14",
-      "rank": 6
     },
     {
       "ticker": "XLRE",
@@ -292,8 +238,8 @@
       "price": 44.48,
       "ma10": 44.41,
       "ma20": 44.42,
-      "ma50": 44.12,
-      "disparity": 100.82,
+      "ma100": 43.16,
+      "disparity": 103.06,
       "zone": "cooldown",
       "market": {
         "state": "bear",
@@ -307,7 +253,88 @@
         "slope20_pct": -0.02
       },
       "as_of_date": "2026-07-14",
+      "rank": 5
+    },
+    {
+      "ticker": "XLU",
+      "symbol": "XLU",
+      "kind": "sector",
+      "name_ko": "유틸리티",
+      "name_en": "Utilities Select Sector SPDR ETF",
+      "theme": "전력수요·배당·금리",
+      "price": 45.69,
+      "ma10": 45.42,
+      "ma20": 45.27,
+      "ma100": 45.33,
+      "disparity": 100.79,
+      "zone": "cooldown",
+      "market": {
+        "state": "sideways",
+        "label": "횡보장",
+        "score": 18.2,
+        "cross": true,
+        "up10": false,
+        "up20": true,
+        "spread_pct": 0.33,
+        "slope10_pct": -0.29,
+        "slope20_pct": 0.96
+      },
+      "as_of_date": "2026-07-14",
+      "rank": 6
+    },
+    {
+      "ticker": "XLY",
+      "symbol": "XLY",
+      "kind": "sector",
+      "name_ko": "임의소비재",
+      "name_en": "Consumer Discretionary Select Sector SPDR ETF",
+      "theme": "소비 사이클·자동차·이커머스",
+      "price": 115.9,
+      "ma10": 116.92,
+      "ma20": 116.33,
+      "ma100": 115.37,
+      "disparity": 100.46,
+      "zone": "cooldown",
+      "market": {
+        "state": "bull",
+        "label": "상승장",
+        "score": 19.8,
+        "cross": true,
+        "up10": true,
+        "up20": true,
+        "spread_pct": 0.51,
+        "slope10_pct": 0.65,
+        "slope20_pct": 0.21
+      },
+      "as_of_date": "2026-07-14",
       "rank": 7
+    },
+    {
+      "ticker": "XLE",
+      "symbol": "XLE",
+      "kind": "sector",
+      "name_ko": "에너지",
+      "name_en": "Energy Select Sector SPDR ETF",
+      "theme": "유가·정제마진·현금흐름",
+      "price": 56.95,
+      "ma10": 54.61,
+      "ma20": 54.37,
+      "ma100": 56.7,
+      "disparity": 100.44,
+      "zone": "cooldown",
+      "market": {
+        "state": "sideways",
+        "label": "횡보장",
+        "score": 16.6,
+        "cross": true,
+        "up10": true,
+        "up20": false,
+        "spread_pct": 0.44,
+        "slope10_pct": 1.79,
+        "slope20_pct": -0.68
+      },
+      "as_of_date": "2026-07-14",
+      "rank": 8
     },
     {
       "ticker": "XLP",
@@ -319,8 +346,8 @@
       "price": 83.42,
       "ma10": 84.0,
       "ma20": 83.96,
-      "ma50": 83.72,
-      "disparity": 99.64,
+      "ma100": 83.44,
+      "disparity": 99.98,
       "zone": "cooldown",
       "market": {
         "state": "sideways",
@@ -334,7 +361,7 @@
         "slope20_pct": -0.06
       },
       "as_of_date": "2026-07-14",
-      "rank": 8
+      "rank": 9
     },
     {
       "ticker": "XLB",
@@ -346,8 +373,8 @@
       "price": 50.64,
       "ma10": 50.99,
       "ma20": 51.3,
-      "ma50": 51.03,
-      "disparity": 99.24,
+      "ma100": 50.81,
+      "disparity": 99.67,
       "zone": "cooldown",
       "market": {
         "state": "bear",
@@ -361,7 +388,7 @@
         "slope20_pct": -0.02
       },
       "as_of_date": "2026-07-14",
-      "rank": 9
+      "rank": 10
     },
     {
       "ticker": "XLC",
@@ -373,8 +400,8 @@
       "price": 111.45,
       "ma10": 110.23,
       "ma20": 109.23,
-      "ma50": 112.51,
-      "disparity": 99.06,
+      "ma100": 113.54,
+      "disparity": 98.16,
       "zone": "cooldown",
       "market": {
         "state": "sideways",
@@ -386,33 +413,6 @@
         "spread_pct": 0.92,
         "slope10_pct": 1.96,
         "slope20_pct": -0.06
-      },
-      "as_of_date": "2026-07-14",
-      "rank": 10
-    },
-    {
-      "ticker": "XLY",
-      "symbol": "XLY",
-      "kind": "sector",
-      "name_ko": "임의소비재",
-      "name_en": "Consumer Discretionary Select Sector SPDR ETF",
-      "theme": "소비 사이클·자동차·이커머스",
-      "price": 115.9,
-      "ma10": 116.92,
-      "ma20": 116.33,
-      "ma50": 117.18,
-      "disparity": 98.91,
-      "zone": "cooldown",
-      "market": {
-        "state": "bull",
-        "label": "상승장",
-        "score": 19.8,
-        "cross": true,
-        "up10": true,
-        "up20": true,
-        "spread_pct": 0.51,
-        "slope10_pct": 0.65,
-        "slope20_pct": 0.21
       },
       "as_of_date": "2026-07-14",
       "rank": 11

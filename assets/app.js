@@ -100,7 +100,7 @@ async function initMain() {
             <span class="ic-disp ${s.zone}">${fmtNum(s.disparity, 1)}</span>
             <span class="badge ${s.zone}">${ZONE_META[s.zone].label}</span>
           </div>
-          <div class="ic-sub">${money(s.price, s.kind)} · 50일선 ${money(s.ma50, s.kind)}</div>
+          <div class="ic-sub">${money(s.price, s.kind)} · 100일선 ${money(s.ma100, s.kind)}</div>
         </div>`
         )
         .join("");
@@ -122,7 +122,7 @@ async function initMain() {
       </td>
       <td class="left hide-sm"><span class="ticker">${s.ticker}</span></td>
       <td class="hide-sm">$${fmtNum(s.price)}</td>
-      <td class="hide-sm">$${fmtNum(s.ma50)}</td>
+      <td class="hide-sm">$${fmtNum(s.ma100)}</td>
       <td>${s.market ? `<span class="market-chip ${s.market.state}">${s.market.label}</span>` : ""}</td>
       <td><span class="disp ${s.zone}">${fmtNum(s.disparity)}</span></td>
       <td><span class="badge ${s.zone}">${ZONE_META[s.zone].label}</span></td>
@@ -139,7 +139,7 @@ async function initMain() {
           <th class="left">섹터</th>
           <th class="left hide-sm">티커</th>
           <th class="hide-sm">현재가</th>
-          <th class="hide-sm">50일선</th>
+          <th class="hide-sm">100일선</th>
           <th>추세</th>
           <th>이격도</th>
           <th>구간</th>
@@ -285,7 +285,7 @@ function renderCharts(series, zones, rangeDays, kind = "sector") {
   const data = series.slice(-rangeDays);
   const labels = data.map((d) => d.date);
   const prices = data.map((d) => d.price);
-  const ma50 = data.map((d) => d.ma50);
+  const ma100 = data.map((d) => d.ma100);
   const ma10 = data.map((d) => d.ma10);
   const ma20 = data.map((d) => d.ma20);
   const disp = data.map((d) => d.disparity);
@@ -309,7 +309,7 @@ function renderCharts(series, zones, rangeDays, kind = "sector") {
     },
   });
 
-  // 가격 + MA50
+  // 가격 + MA100
   if (priceChart) priceChart.destroy();
   priceChart = new Chart(document.getElementById("priceChart"), {
     type: "line",
@@ -317,7 +317,7 @@ function renderCharts(series, zones, rangeDays, kind = "sector") {
       labels,
       datasets: [
         { label: "종가", data: prices, borderColor: "#a06ad4", backgroundColor: "rgba(160,106,212,0.08)", borderWidth: 2, pointRadius: 0, fill: true, tension: 0.1 },
-        { label: "50일 이동평균", data: ma50, borderColor: "#f59e0b", borderWidth: 1.5, pointRadius: 0, borderDash: [5, 4], tension: 0.1 },
+        { label: "100일 이동평균", data: ma100, borderColor: "#f59e0b", borderWidth: 1.5, pointRadius: 0, borderDash: [5, 4], tension: 0.1 },
       ],
     },
     options: baseOpts(),
@@ -343,8 +343,8 @@ function renderCharts(series, zones, rangeDays, kind = "sector") {
     options: dOpts,
   });
 
-  // 종합: 지수(종가) + 50일선 (좌축) + 이격도 막대 (우축).
-  // 이격도 막대는 100(= 50일선과 동일) 기준으로 위(과열)/아래(과열해소)로 뻗는다.
+  // 종합: 지수(종가) + 100일선 (좌축) + 이격도 막대 (우축).
+  // 이격도 막대는 100(= 100일선과 동일) 기준으로 위(과열)/아래(과열해소)로 뻗는다.
   const comboCanvas = document.getElementById("comboChart");
   if (comboCanvas) {
     if (comboChart) comboChart.destroy();
@@ -355,7 +355,7 @@ function renderCharts(series, zones, rangeDays, kind = "sector") {
         labels,
         datasets: [
           {
-            type: "bar", label: "50일 이격도 (우)", data: disp, yAxisID: "y1",
+            type: "bar", label: "100일 이격도 (우)", data: disp, yAxisID: "y1",
             base: 100, order: 3,
             backgroundColor: "rgba(245,197,66,0.55)", borderColor: "rgba(245,197,66,0.9)", borderWidth: 0,
             categoryPercentage: 1.0, barPercentage: 1.0,
@@ -365,7 +365,7 @@ function renderCharts(series, zones, rangeDays, kind = "sector") {
             order: 1, borderColor: "#e5e7eb", borderWidth: 1.6, pointRadius: 0, tension: 0.1,
           },
           {
-            type: "line", label: "50일선", data: ma50, yAxisID: "y",
+            type: "line", label: "100일선", data: ma100, yAxisID: "y",
             order: 2, borderColor: "#8ba3c7", borderWidth: 2.6, pointRadius: 0, tension: 0.25,
           },
         ],
@@ -451,7 +451,7 @@ async function initDetail() {
 
     <div class="detail-stats">
       <div class="stat"><div class="label">현재가</div><div class="value">${money(last.price, kind)}</div></div>
-      <div class="stat"><div class="label">50일 이동평균</div><div class="value">${money(last.ma50, kind)}</div></div>
+      <div class="stat"><div class="label">100일 이동평균</div><div class="value">${money(last.ma100, kind)}</div></div>
       <div class="stat"><div class="label">이격도</div><div class="value" style="color:${ZONE_META[zone].color}">${fmtNum(last.disparity)}</div></div>
       <div class="stat"><div class="label">기준일</div><div class="value" style="font-size:16px">${last.date}</div></div>
     </div>
@@ -468,7 +468,7 @@ async function initDetail() {
           </div>
         </div>
         <div class="gauge-unit">
-          <div class="gauge-label">이격도 (50일선)</div>
+          <div class="gauge-label">이격도 (100일선)</div>
           <div class="gauge">${buildGauge(last.disparity, zone)}</div>
           <div class="gauge-readout">
             <div class="g-val" style="color:${ZONE_META[zone].color}">${fmtNum(last.disparity)}</div>
@@ -488,7 +488,7 @@ async function initDetail() {
     </section>
 
     <section class="card">
-      <h2>가격 + 50일 이동평균</h2>
+      <h2>가격 + 100일 이동평균</h2>
       <div class="chart-box"><canvas id="priceChart"></canvas></div>
     </section>
 
@@ -498,8 +498,8 @@ async function initDetail() {
     </section>
 
     <section class="card">
-      <h2>종합 — 지수 · 50일선 · 이격도</h2>
-      <p class="chart-note">지수와 50일선은 <strong>좌축</strong>, 이격도 막대는 <strong>우축</strong>입니다. 막대는 <strong>100(50일선과 동일)</strong> 기준으로 위=과열 / 아래=과열 해소를 나타냅니다.</p>
+      <h2>종합 — 지수 · 100일선 · 이격도</h2>
+      <p class="chart-note">지수와 100일선은 <strong>좌축</strong>, 이격도 막대는 <strong>우축</strong>입니다. 막대는 <strong>100(100일선과 동일)</strong> 기준으로 위=과열 / 아래=과열 해소를 나타냅니다.</p>
       <div class="chart-box"><canvas id="comboChart"></canvas></div>
     </section>
 
@@ -525,7 +525,7 @@ async function initDetail() {
   const recent = series.slice(-12).reverse();
   document.getElementById("recent-table").innerHTML = `
     <thead><tr>
-      <th class="left">날짜</th><th>종가</th><th>50일선</th><th>이격도</th><th>구간</th>
+      <th class="left">날짜</th><th>종가</th><th>100일선</th><th>이격도</th><th>구간</th>
     </tr></thead>
     <tbody>${recent
       .map((d) => {
@@ -533,7 +533,7 @@ async function initDetail() {
         return `<tr style="cursor:default">
           <td class="left">${d.date}</td>
           <td>${money(d.price, kind)}</td>
-          <td>${money(d.ma50, kind)}</td>
+          <td>${money(d.ma100, kind)}</td>
           <td><span class="disp ${z}" style="font-size:14px">${fmtNum(d.disparity)}</span></td>
           <td><span class="badge ${z}">${ZONE_META[z].label}</span></td>
         </tr>`;
